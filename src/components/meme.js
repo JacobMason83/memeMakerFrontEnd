@@ -3,8 +3,19 @@ import React from 'react'
 const Meme = (props) => {
     return ( 
     <div className="meme">
-        <h1>{props.text}</h1>
-        <img src={props.image} alt="img"/>
+      <div className="img-wrapper">
+        <img className="meme-image" src={props.image} alt="funny_meme"/>
+
+      </div>
+        <p>{props.text}</p>
+
+        {props.favorite ? (
+        <img src="https://clipartart.com/images/rainbow-star-clipart-7.png" alt="star"/>
+
+        ): null 
+        }
+        <button>Delete</button>
+        <button>Edit</button>
       </div>
      )
 }
