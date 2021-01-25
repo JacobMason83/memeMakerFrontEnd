@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-export default function Meme () {
-  return (
-    <div>
-      <h1>Hello from Meme</h1>
-    </div>
-  )
+const Meme = (props) => {
+    return ( 
+    <div className="meme">
+        <h1>{props.text}</h1>
+        <img src={props.image} alt="img"/>
+      </div>
+     )
 }
+
+export default Meme;
