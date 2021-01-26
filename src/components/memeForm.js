@@ -46,7 +46,19 @@ export default function MemeForm (props) {
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('handle submit for memeform')
+    axios
+    .post("http://jdm-meme-flask-api.herokuapp.com/add-meme", {
+      text, 
+      favorite,
+      image
+    })
+    .then(() => {
+      setText(""),
+      setImage(""),
+      setFavorite(false)
+      imageRef.current.dropzone.removeAllFiles()
+    })
+    .catch(err => console.error(err))
   }
   return (
     <div>
@@ -73,7 +85,7 @@ export default function MemeForm (props) {
           onChange={() => setFavorite(!favorite)}
         />
         <span>Favorite?</span>
-        <button type='submit'>Submit</button>
+        <button type='submit'>Post a Meme</button>
       </form>
     </div>
   )
