@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Meme from '../components/meme'
 import axios from 'axios'
+import { navigate } from 'hookrouter'
 
 export default function App(){
 
@@ -19,11 +20,14 @@ export default function App(){
     .then(() => setMemes(memes.filter((meme)=> meme.id !== id)))
     .catch(err => console.error(err))
   }
+  const editMeme = id => {
+    navigate(`/form/${id}`)
+  }
 
   const renderMemes = () => {
     return memes.map((meme) => {
      return (
-       <Meme key={meme.id} {...meme} deleteMeme={deleteMeme} />
+       <Meme key={meme.id} {...meme} deleteMeme={deleteMeme} editMeme={editMeme} />
      )
     })
   }
