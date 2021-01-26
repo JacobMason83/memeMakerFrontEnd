@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import DropzoneComponent from 'react-dropzone-component'
+import { navigate } from 'hookrouter'
 
 import '../../node_modules/react-dropzone-component/styles/filepicker.css'
 import '../../node_modules/dropzone/dist/min/dropzone.min.css'
+
 
 export default function MemeForm (props) {
   const imageRef = useRef(null)
@@ -44,25 +46,60 @@ export default function MemeForm (props) {
       }
     }
   }
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    axios
-    .post("http://jdm-meme-flask-api.herokuapp.com/add-meme", {
-      text, 
-      favorite,
-      image
+  const editSubmit = () => {
+    fetch(`https://jdm-meme-flask-api.herokuapp.com/meme/${props.id}`, {
+      method: 'PUT', 
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      }, 
+      body: JSON.stringify({
+        text,
+        favorite
+      })
     })
-    .then(() => {
-      setText(""),
-      setImage(""),
-      setFavorite(false)
-      imageRef.current.dropzone.removeAllFiles()
-    })
+    .then(() => imageRef.current.dropzone.removeAllFiles())
+    .then(() => navigate('/'))
     .catch(err => console.error(err))
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    switch(!props.id) {
+      case false:
+        editSubmit()
+        break
+      default:
+        axios
+        .post("http://jdm-meme-flask-api.herokuapp.com/add-meme", {
+          text, 
+          favorite,
+          image
+        })
+        .then(() => {
+          setText(""),
+          setImage(""),
+          setFavorite(false)
+          imageRef.current.dropzone.removeAllFiles()
+        })
+        .catch(err => console.error(err))
+    }   
+  }
+  useEffect(() => {
+    if(props.id){
+     fetch(`https://jdm-meme-flask-api.herokuapp.com/meme/${props.id}`)
+     .then(res =>res.json())
+     .then(data => {
+       setText(data.text)
+       setFavorite(data.favorite)
+     })
+     .catch(err => console.error(err))
+    }
+  }, [])
   return (
     <div>
-      <h1>Add a Meme</h1>
+      <h1>{props.id ? "Edit Meme" : "Post Meme"}</h1>
 
       <form onSubmit={handleSubmit}>
         <DropzoneComponent 
@@ -85,7 +122,7 @@ export default function MemeForm (props) {
           onChange={() => setFavorite(!favorite)}
         />
         <span>Favorite?</span>
-        <button type='submit'>Post a Meme</button>
+        <button type='submit'>{props.id ? "Edit Meme" : "Post Meme"}</button>
       </form>
     </div>
   )
