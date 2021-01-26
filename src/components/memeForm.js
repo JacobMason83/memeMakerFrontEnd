@@ -11,7 +11,7 @@ export default function MemeForm (props) {
   const imageRef = useRef(null)
   const [text, setText] = useState('')
   const [favorite, setFavorite] = useState(false)
-  const [image, setImage] = useState('')
+  const [image, setImage] = useState('https://source.unsplash.com/random')
 
   const componentConfig = () => {
     return {
